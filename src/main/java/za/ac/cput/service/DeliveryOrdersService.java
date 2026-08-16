@@ -36,6 +36,11 @@ public class DeliveryOrdersService implements IDeliveryOrdersService {
     }
 
     @Override
+    public List<DeliveryOrders> getAll() {
+        return List.of();
+    }
+
+    @Override
     public List<DeliveryOrders> getAllDeliveryOrders() {
         return this.repository.findAll();
     }

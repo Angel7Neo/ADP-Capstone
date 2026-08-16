@@ -1,19 +1,24 @@
 package za.ac.cput.controller;
+
 /*
 DriverController.java
 Driver controller class
 Author: Angel Dineo Masonganye (223008869)
 Date: 2026
 */
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import za.ac.cput.domain.Driver;
 import za.ac.cput.service.impl.DriverServiceImpl;
+import java.util.UUID;
+import java.util.List;
 
 @RestController
 @RequestMapping("/driver")
 public class DriverController {
+
     private final DriverServiceImpl service;
 
     @Autowired
@@ -23,25 +28,42 @@ public class DriverController {
 
     @PostMapping("/create")
     public ResponseEntity<Driver> create(@RequestBody Driver driver) {
-        return ResponseEntity.ok(service.create(driver));
+        Driver newDriver = new Driver.Builder()
+                .copy(driver)
+                .setId(UUID.randomUUID().toString())
+                .build();
+        return ResponseEntity.ok(service.create(newDriver));
     }
 
     @GetMapping("/read/{id}")
     public ResponseEntity<Driver> read(@PathVariable String id) {
         Driver driver = service.read(id);
-        if (driver == null) return ResponseEntity.notFound().build();
+
+        if (driver == null) {
+            return ResponseEntity.notFound().build();
+        }
+
         return ResponseEntity.ok(driver);
     }
 
     @PutMapping("/update")
     public ResponseEntity<Driver> update(@RequestBody Driver driver) {
         Driver updated = service.update(driver);
-        if (updated == null) return ResponseEntity.notFound().build();
+
+        if (updated == null) {
+            return ResponseEntity.notFound().build();
+        }
+
         return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Boolean> delete(@PathVariable String id) {
         return ResponseEntity.ok(service.delete(id));
+    }
+
+    @GetMapping("/getAll")
+    public List<Driver> getAllDriver() {
+        return service.getAll();
     }
 }
